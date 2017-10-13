@@ -1,17 +1,25 @@
 <?php // filename: index.php
-include("koneksi.php");
-
-if(isset($_POST['filter'])){
-		$query = "SELECT * FROM Kontak
-		INNER JOIN kategori 
-		ON kontak.kategori_id = kategori.id
-		WHERE kategori_id = $_POST[kategori]";
-}else{
-		$query = "SELECT * FROM Kontak
-		INNER JOIN kategori 
-		ON kontak.kategori_id = kategori.id";
-}
-$hasil = mysqli_query($db, $query);
+	include("koneksi.php");
+	
+	if(isset($_POST['filter']))
+	{
+		$kat = mysqli_real_escape_string($db, $_POST['kategori']);
+		$query = "SELECT * FROM Kontak INNER JOIN kategori ON kontak.id_kategori = kategori.id_kategori WHERE id_kategori = $kat";
+	}
+	elseif (isset($_POST['cari']))
+	{
+		$cari = mysqli_real_escape_string($db, $_POST['search_text']);
+		$query =  "SELECT * FROM kontak INNER JOIN kategori ON kontak.id_kategori = kategori.id_kategori WHERE nama like '%{$cari}%'";
+	}
+	else
+	{
+		$query = "SELECT * FROM Kontak INNER JOIN kategori ON kontak.id_kategori = kategori.id_kategori";
+	}
+	
+	$hasil = mysqli_query($db, $query);
+	if(!$hasil) {
+		echo "Error : ".mysqli_error($db);
+	}
 ?>
 
 <!DOCTYPE html>
@@ -30,18 +38,19 @@ $hasil = mysqli_query($db, $query);
 <div id="filter">
 	<b>Filter berdasarkan kategori: </b>
 	<form action="" method="post">
-		<select name="kategori">
-			<?php
-			$q2 = "SELECT * FROM kategori";
-			$h2 = mysqli_query($db, $q2);
-			while($row = mysqli_fetch_assoc($h2)){
-			?>
-			<option value=""></option>
-			<?php 
+		<select name='kategori'>
+		<?php
+			$hmm = "SELECT * FROM kategori";
+			$hoam = mysqli_query($db, $hmm);
+			while($row = mysqli_fetch_assoc($hoam)){
+   		?>
+		<option value="<?php echo $row[id_kategori]; ?>"><?php echo $row['keterangan']; ?></option>
+		<?php 
 			}
-			?>
+		?>
 		</select>
 		<input type="submit" name="filter" value="Filter" />
+		<input type="button" name="clear" onclick="window.location.href=window.location.href" value="Clear" />
 	</form>
 </div>
 <div id="search">
@@ -49,6 +58,7 @@ $hasil = mysqli_query($db, $query);
 	<form action="" method="post">
 		<input type="text" name="search_text" />
 		<input type="submit" name="cari" value="Cari" />
+		<input type="button" name="clear" onclick="window.location.href=window.location.href" value="Clear" />
 	</form>
 </div>
 <div id="konten">
@@ -67,23 +77,25 @@ $hasil = mysqli_query($db, $query);
 		</thead>
 		<tbody>
 			<?php
-			$i = 0;
-			while($row = mysqli_fetch_assoc($h2)){
-				$i++;
+				$i = 0;
+
+				while($row=mysqli_fetch_assoc($hasil))
+				{
+					$i++;
 			?>
 			<tr>
 				<td><?php echo $i; ?></td>
 				<td><?php echo $row['nama']; ?></td>
-				<td><?php echo $row['phone']; ?></td>
+				<td><?php echo $row['hp']; ?></td>
 				<td><?php echo $row['email']; ?></td>
 				<td><?php echo $row['keterangan']; ?></td>
 				<td>
-					<a href="form_edit_kontak.php?id=<?php echo $row['id']; ?>">Edit</a> | 
-					<a href="delete_kontak.php?id=<?php echo $row['id']; ?>">Delete</a>
+					<a href="form_edit_kontak.php?id=<?php echo $row['id_kontak']; ?>">Edit</a> | 
+					<a href="delete_kontak.php?id=<?php echo $row['id_kontak']; ?>">Delete</a>
 				</td>
 			</tr>
 			<?php
-			}
+				}
 			?>
 		</tbody>
 	</table>
