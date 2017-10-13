@@ -1,13 +1,10 @@
-<?php 
-//1. Koneksi
-include ("koneksi.php");
+<?php
+	include("koneksi.php");
 
-$id = $_GET['id'];
+	$id = $_GET['id'];
 
-//2. Query 
-$query = "DELETE FROM index
-		  WHERE id=$id";
+	$query = "DELETE FROM kontak WHERE id_kontak=$id";
+	mysqli_query($db, $query);
 
-mysqli_query($db, $query);
-
-header('Location: index.php');
+	header('Location: index.php')
+?>
