@@ -1,13 +1,11 @@
-<?php 
+<?php
+	include("koneksi.php");
 
-//1. Koneksi 
-include("koneksi.php");
+	$nama = mysqli_real_escape_string($db, $_POST['nama']);
+	$phone = mysqli_real_escape_string($db, $_POST['phone']);
+	$email = mysqli_real_escape_string($db, $_POST['email']);
 
-//2. Query 
-//Data Dari Form
-$ket = mysqli_real_escape_string($db, $_POST['ket']);
-$query = "INSERT INTO index (index) VALUES ('$ket')";
+	$query = "INSERT INTO kontak(nama,hp,email,id_kategori) VALUES ('$nama','$phone','$email','".$_POST['kategori']."')";
+	mysqli_query($db, $query);
 
-mysqli_query($db, $query);
-
-header("Location: index.php");
+	header('Location:index.php');
