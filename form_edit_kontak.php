@@ -1,14 +1,12 @@
 <?php // filename: form_edit_kontak.php
-include ("koneksi.php");
+	include("koneksi.php");
 
-$id = $_GET['id'];
+	$id = $_GET['id'];
 
+	$query = "SELECT * FROM kontak WHERE id_kontak=$id";
+	$hasil = mysqli_query($db,$query);
 
-$query = "SELECT * FROM kontak 
-		  WHERE id=$id";
-$hasil = mysqli_query($db, $query);
-
-$row = mysqli_fetch_assoc($hasil);
+	$row = mysqli_fetch_assoc($hasil);
 ?>
 
 <!DOCTYPE html>
@@ -28,18 +26,26 @@ $row = mysqli_fetch_assoc($hasil);
 	<h2>Edit Kontak</h2>
 	<form action="proses_edit_kontak.php" method="post">
 		Nama:
-		<input type="text" value="<?php echo $row['nama'] ?> name="nama" />
+		<input type="text" name="nama" value="<?php echo $row['nama'];?>"/>
 		<br />
 		Phone:
-		<input type="text" value="<?php echo $row['phone'] ?> name="phone" />
+		<input type="text" name="phone" value="<?php echo $row['hp'];?>"/>
 		<br />
 		Email:
-		<input type="text" value="<?php echo $row['email'] ?> name="email" />
+		<input type="text" name="email" value="<?php echo $row['email'];?>"/>
 		<br />
+		<input type="hidden" name="id" value="<?php echo $row['id_kontak']; ?>" />
 		Kategori:
-		<select name="kategori">
-			<option value="value="<?php echo $row['kategori'] ?>"></option>
-		</select>
+		<?php
+			$hm = "SELECT * FROM kategori";
+			$hasil = mysqli_query($db, $hm);
+
+			echo "<select name='kategori'>";
+			while ($row = mysqli_fetch_array($hasil)) {
+			    echo "<option value='" . $row['id_kategori'] ."'>" . $row['keterangan'] ."</option>";
+			}
+			echo "</select>";
+		?>
 		<br />
 		<input type="submit" value="Simpan" />
 	</form>

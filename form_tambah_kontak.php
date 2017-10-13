@@ -1,5 +1,5 @@
 <?php // filename: form_tambah_kontak.php
-
+	include("koneksi.php");
 ?>
 
 <!DOCTYPE html>
@@ -28,9 +28,16 @@
 		<input type="text" name="email" />
 		<br />
 		Kategori:
-		<select name="kategori">
-			<option value=""></option>
-		</select>
+		<?php
+			$hm = "SELECT * FROM kategori";
+			$hasil = mysqli_query($db, $hm);
+
+			echo "<select name='kategori'>";
+			while ($row = mysqli_fetch_array($hasil)) {
+			    echo "<option value='" . $row['id_kategori'] ."'>" . $row['keterangan'] ."</option>";
+			}
+			echo "</select>";
+		?>
 		<br />
 		<input type="submit" value="Simpan" />
 	</form>
